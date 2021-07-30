@@ -24,6 +24,7 @@ const ImageCropper = dynamic(
     import('../components/ImageCropper').then((mod) => mod.ImageCropper as any), // eslint-disable-line @typescript-eslint/no-explicit-any
   { ssr: false }
 ) as typeof ImageCropperType;
+import { Line } from 'react-chartjs-2';
 
 interface UnsubSettingProps {
   prefs: AccountPrefsT | undefined;
@@ -230,6 +231,35 @@ export const AccountPage = ({ user, constructorPage, prefs }: AuthProps) => {
             />
           </li>
         </ul>
+        <hr css={{ margin: '2em 0' }} />
+        <h2>Rating</h2>
+        {prefs?.rtgs ? (
+          <Line
+            type="line"
+            data={{
+              labels: prefs.rtgs.map((r) => r.u),
+              datasets: [{ label: 'rating', data: prefs.rtgs.map((r) => r.r) }],
+            }}
+            options={{
+              scales: {
+                x: {
+                  ticks: {
+                    callback: (v: number) =>
+                      new Date(
+                        this.getLabelForValue(v) * 1000 * 60 * 60 * 24
+                      ).toString(),
+                  },
+                },
+              },
+              plugins: {
+                tooltip: { enabled: false },
+                legend: { display: false },
+              },
+            }}
+          />
+        ) : (
+          ''
+        )}
         <hr css={{ margin: '2em 0' }} />
         <h2>Crossword Blog</h2>
         {hasAuthoredPuzzle ? (
